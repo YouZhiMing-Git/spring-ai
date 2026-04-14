@@ -1,0 +1,54 @@
+server:
+  port: 8999
+
+spring:
+  ai:
+    zhipuai:
+      api-key: ${ZHIPU_API_KEY}  # 从环境变量读取智谱AI API密钥
+      chat:
+        options:
+          model: glm-4  # 或 glm-3-turbo 等其他模型
+    openai:
+      api-key: ${DEEPSEEK_API_KEY}  # 从环境变量读取DeepSeek API密钥sk-7524086bdbdc45188fd40f4e081e9aa9
+      base-url: https://api.deepseek.com
+      chat:
+        options:
+          model: deepseek-chat  # DeepSeek 模型名称
+
+
+# Resilience4j 弹性配置：为 AI 模型调用提供重试和熔断保护
+resilience4j:
+  # 重试机制配置：处理临时性故障，自动重新尝试失败的请求
+  retry:
+    instances:
+      # model-retry 实例：专门用于 AI 模型调用的重试策略
+      model-retry:
+        # 最大重试次数（包含首次调用共3次）
+        max-attempts: 3
+        # 基础等待时长：每次重试前的初始等待时间
+        wait-duration: 1s
+        # 启用指数退避策略：避免频繁重试导致服务雪崩
+        enable-exponential-backoff: true
+        # 指数退避倍数：每次重试等待时间翻倍（1s -> 2s -> 4s）
+        exponential-backoff-multiplier: 2
+        # 需要重试的异常类型列表：仅对临时性错误进行重试
+        retry-exceptions:
+          - org.springframework.ai.retry.TransientAiException
+          - java.net.SocketTimeoutException
+  # 熔断器配置：防止持续调用失败的服务，实现快速失败和自动恢复
+  circuitbreaker:
+    instances:
+      # model-cb 实例：AI 模型调用的熔断保护策略
+      model-cb:
+        # 滑动窗口大小：统计最近10次调用的成功率
+        sliding-window-size: 10
+        # 失败率阈值：当失败率达到50%时触发熔断，进入打开状态
+        failure-rate-threshold: 50
+        # 熔断器打开状态的等待时长：10秒后进入半开状态进行试探
+        wait-duration-in-open-state: 10s
+        # 半开状态允许的探测调用次数：通过3次成功调用后关闭熔断器
+        permitted-number-of-calls-in-half-open-state: 3
+        # 触发熔断的异常类型列表：这些异常会被计为失败
+        record-exceptions:
+          - org.springframework.ai.retry.TransientAiException
+
