@@ -50,7 +50,10 @@ public class MultiModelRoutingAdvisor implements CallAroundAdvisor, StreamAround
                 return chain.nextAroundCall(advisedRequest);
             }
             ChatResponse chatResponse = selectedModel.call(advisedRequest.toPrompt());
-            return AdvisedResponse.builder().response(chatResponse).build();
+            return AdvisedResponse.builder()
+                    .response(chatResponse)
+                    .adviseContext(advisedRequest.adviseContext())
+                    .build();
 
         } finally {
             CURRENT_ROUTE.remove();
@@ -73,6 +76,7 @@ public class MultiModelRoutingAdvisor implements CallAroundAdvisor, StreamAround
         Flux<ChatResponse> responseFlux = selectedModel.stream(advisedRequest.toPrompt());
         return responseFlux.map(response -> AdvisedResponse.builder()
                 .response(response)
+                .adviseContext(advisedRequest.adviseContext())
                 .build());
     }
 

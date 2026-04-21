@@ -52,3 +52,11 @@ resilience4j:
         record-exceptions:
           - org.springframework.ai.retry.TransientAiException
 
+
+# 日志级别设为debug
+
+logging:
+  level:
+    root: INFO
+    com.youzm: DEBUG
+    org.springframework.ai: DEBUG

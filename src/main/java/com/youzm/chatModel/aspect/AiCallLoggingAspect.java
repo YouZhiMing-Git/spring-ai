@@ -15,8 +15,8 @@ import org.springframework.stereotype.Component;
  * @date: 2026/4/8
  * @description: AI 调用日志切面 - 记录提示词和 token 消耗
  */
-@Aspect
-@Component
+//@Aspect
+//@Component
 public class AiCallLoggingAspect {
 
     private static final Logger log = LoggerFactory.getLogger(AiCallLoggingAspect.class);

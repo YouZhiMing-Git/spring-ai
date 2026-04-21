@@ -4,6 +4,8 @@ import com.youzm.chatModel.advisors.multiRout.MultiModelRoutingAdvisor;
 import com.youzm.service.ToolService;
 import io.micrometer.observation.ObservationRegistry;
 import org.springframework.ai.chat.client.ChatClient;
+import org.springframework.ai.chat.client.advisor.MessageChatMemoryAdvisor;
+import org.springframework.ai.chat.client.advisor.SimpleLoggerAdvisor;
 import org.springframework.ai.chat.model.ChatModel;
 import org.springframework.ai.model.tool.ToolCallingManager;
 import org.springframework.ai.openai.OpenAiChatModel;
@@ -132,10 +134,10 @@ public class ModelConfig {
     }
 
     @Bean
-    public ChatClient chatClient(ChatClient.Builder builder, MultiModelRoutingAdvisor routingAdvisor) {
+    public ChatClient chatClient(ChatClient.Builder builder, MultiModelRoutingAdvisor routingAdvisor, SimpleLoggerAdvisor simpleLoggerAdvisor, MessageChatMemoryAdvisor messageChatMemoryAdvisor) {
 
         return builder
-                .defaultAdvisors(routingAdvisor)  // 全局注册，所有请求都会经过路由
+                .defaultAdvisors(routingAdvisor,simpleLoggerAdvisor,messageChatMemoryAdvisor)  // 全局注册，所有请求都会经过路由
                 .build();
 
     }
