@@ -1,0 +1,14 @@
+{
+    "configurations": [
+        {
+            "type": "java",
+            "name": "Spring Boot-McpApplication<mcp>",
+            "request": "launch",
+            "cwd": "${workspaceFolder}",
+            "mainClass": "com.youzm.mcp.McpApplication",
+            "projectName": "mcp",
+            "args": "",
+            "envFile": "${workspaceFolder}/.env"
+        }
+    ]
+}

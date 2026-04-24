@@ -1,0 +1,14 @@
+server:
+  port: 8900
+
+spring:
+  ai:
+    zhipuai:
+      api-key: ${ZHIPU_API_KEY}  # 从环境变量读取智谱AI API密钥
+      chat:
+        options:
+          model: glm-4  # 或 glm-3-turbo 等其他模型
+    mcp:
+      client:
+        stdio:
+          servers-configuration: classpath:mcp-servers.json
